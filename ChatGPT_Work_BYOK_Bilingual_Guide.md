@@ -1,19 +1,21 @@
-Credit by falconspatha
-# ChatGPT Desktop "ChatGPT Work" Mode + BYOK (Third-Party API) Ultimate Guide
-# ChatGPT 桌面端「ChatGPT Work」模式搭配 BYOK（第三方 API）終極教學指南
+# ChatGPT Desktop "ChatGPT Work" Mode + BYOK Guide
+
+# ChatGPT 桌面端「ChatGPT Work」模式搭配 BYOK 指南
 
 ---
 
 ## 🌐 Language Navigation / 語言導覽
-* [Part 1: 繁體中文完整教學指南 (Traditional Chinese Guide)](#part-1-繁體中文完整教學指南)
-* [Part 2: Full English Guide (英文完整教學指南)](#part-2-full-english-guide)
+
+- [Part 1: 繁體中文完整教學指南 (Traditional Chinese Guide)](#part-1-繁體中文完整教學指南)
+- [Part 2: Full English Guide (英文完整教學指南)](#part-2-full-english-guide)
 
 ---
 
 # Part 1: 繁體中文完整教學指南
 
 ## 📌 適用情境與解決的三大錯誤
-當你在新版 ChatGPT / Codex 桌面端（`26.1013` / `26.1016` 及以上版本）想使用 **ChatGPT Work 介面與內建瀏覽器**，同時連接自己的第三方中轉站 / BYOK API Key（例如 Techikey 等）時，這套雙軌認證方法能完美解決以下三大常見報錯：
+
+當 ChatGPT / Codex 桌面端的特定版本要求 Work 模式或內建工具必須有官方帳號登入，而你又使用第三方 BYOK API 供應商時，可參考以下雙軌認證方式。版本行為、設定欄位及工具支援可能變動；請先確認你的客戶端與供應商支援相關設定。本指南不保證適用於所有版本或所有錯誤。
 
 1. `Error submitting message: Work browser access requires an authenticated account`
 2. `ChatGPT configuration could not be loaded: model_providers contains reserved built-in provider IDs: 'openai'`
@@ -21,50 +23,52 @@ Credit by falconspatha
 
 ---
 
+此設定主要針對第一項錯誤；其餘錯誤僅在原因與下方說明相符時才適用。
+
 ## 🚀 完整設定 4 步驟
 
-### 步驟 1：先登入一次免費官方帳號（產生合法 `auth.json`）
-为了让桌面端的 `ChatGPT Work` 模式與內建瀏覽器通過身分檢查，本地的 `~/.codex/auth.json` 必須保有官方帳號的登入憑證。
+### 步驟 1：使用客戶端支援的官方帳號登入
 
-1. 打開 `~/.codex/` 資料夾：
-   * **macOS：** 打開 Finder，按快捷鍵 `Cmd + Shift + G`，輸入 `~/.codex/` 並按 Enter。
-   * **Windows：** 打開檔案總管，前往 `C:\Users\<你的使用者名稱>\.codex\`。
-2. 如果裡面已經有改過的 `config.toml`，請先將 `config.toml` 暫時移到桌面備份，並刪除舊的 `auth.json`。
-3. 啟動 `ChatGPT.app`，使用**任何一個官方 ChatGPT 帳號（免費版 Free 帳號即可）**完成登入。
-4. 登入成功後，完全退出 App（macOS 按 `Cmd + Q`）。此時系統會在 `~/.codex/auth.json` 自動生成合法的官方認證 Token。
+若客戶端要求 Work 模式或內建工具驗證官方帳號身分，請使用該客戶端支援的官方帳號登入。帳號資格與功能可用性依服務條款、帳號類型及客戶端版本而異。
 
-#### 📄 `auth.json` 標準範本與檢查方式
-請打開 `~/.codex/auth.json` 確認格式如下（**請保持官方自動生成的內容不變，`OPENAI_API_KEY` 維持 `null`，不要填入第三方 Key**）：
+1. 在應用程式的帳號設定中登入，或依該客戶端的官方說明完成登入。
+2. 若需要檢查本機憑證檔案，請先確認該版本的官方文件所述位置；不同作業系統與安裝方式可能不同。
+3. 不要手動建立、編輯、刪除或分享認證檔案。登入憑證應由客戶端管理。
+
+#### 📄 `auth.json` 結構示意
+
+認證檔案格式可能因版本而異。以下僅為結構示意，**不可直接複製或用來建立認證檔案**；請保留客戶端自動產生的內容，不要在文件、截圖或問題回報中貼出任何憑證：
 
 ```json
 {
   "auth_mode": "chatgpt",
   "OPENAI_API_KEY": null,
   "tokens": {
-    "id_token": "eyJhbG...(保持官方自動生成的 id_token，請勿修改)...",
-    "access_token": "eyJhbG...(保持官方自動生成的 access_token，請勿修改)...",
-    "refresh_token": "rt.1...(保持官方自動生成的 refresh_token，請勿修改)...",
-    "account_id": "你的官方 Account_ID (保持不變)"
+    "id_token": "REDACTED",
+    "access_token": "REDACTED",
+    "refresh_token": "REDACTED",
+    "account_id": "REDACTED"
   },
-  "last_refresh": "2026-10-22T11:40:02.879709Z"
+  "last_refresh": "REDACTED"
 }
 ```
 
 ---
 
-### 步驟 2：編寫 `~/.codex/config.toml`（實現雙軌認證分離）
-打開 `~/.codex/config.toml`，將檔案內容替換為以下標準範本（請將範例中的 `https://techikey.com/v1`、`gpt-6.1-sol` 與 `sk-你的BYOK_API_KEY` 替換為你自己的資訊）：
+### 步驟 2：依客戶端說明設定 BYOK 供應商
 
-#### 📄 `config.toml` 完整標準範本
+依照客戶端文件找到設定檔，並備份現有設定。以下是欄位示意，並非適用於所有版本或供應商的通用設定檔。請將 `https://api.example.com/v1`、`YOUR_MODEL_ID` 和 `YOUR_API_KEY` 換成供應商提供的值，並確認該供應商支援所選 API 格式及認證方式：
+
+#### 📄 `config.toml` 欄位示例
+
 ```toml
 # ============================================================================
 # 1. 頂層全域設定（必須放在所有 [xxx] 區塊標籤的最上方！）
 # ============================================================================
-# 注意：model_provider 必須寫成首字母大寫的 "OpenAI"！
-# 小寫 "openai" 為系統保留字會報錯，大寫 "OpenAI" 則可合法建立自訂區塊。
-model_provider = "OpenAI"
-openai_base_url = "https://techikey.com/v1"
-model = "gpt-6.1-sol"
+# 使用未被保留的自訂供應商 ID，並在下方保持名稱一致。
+model_provider = "CustomProvider"
+openai_base_url = "https://api.example.com/v1"
+model = "YOUR_MODEL_ID"
 model_reasoning_effort = "medium"
 
 # ============================================================================
@@ -77,100 +81,56 @@ conversationDetailMode = "STEPS_PROSE" # 設為 STEPS_PROSE 以保持在 ChatGPT
 # ============================================================================
 # 3. 自訂供應商與雙軌鑑權設定（名稱必須與頂層 model_provider 完全一致）
 # ============================================================================
-[model_providers.OpenAI]
-name = "techikey"
-base_url = "https://techikey.com/v1"
+[model_providers.CustomProvider]
+name = "Your BYOK provider"
+base_url = "https://api.example.com/v1"
 wire_api = "responses"
-experimental_bearer_token = "sk-你的BYOK_API_KEY"
-requires_openai_auth = true   # 關鍵 1：讓 Work Browser 讀取 auth.json 通過官方身分驗證
-supports_websockets = false   # 關鍵 2：關閉 wss:// WebSocket 改走 HTTPS，避免 401 報錯
+experimental_bearer_token = "YOUR_API_KEY"
+requires_openai_auth = true   # 只有客戶端設定文件支援時才使用
+supports_websockets = false   # 若供應商不支援 WebSocket，可依文件停用
 
-[model_providers.OpenAI.http_headers]
-Authorization = "Bearer sk-你的BYOK_API_KEY"
+[model_providers.CustomProvider.http_headers]
+Authorization = "Bearer YOUR_API_KEY"
 Content-Type = "application/json"
 
-# ============================================================================
-# 4. 官方內建插件設定（以下保持開啟即可在 Work 模式使用完整功能）
-# ============================================================================
-[marketplaces.openai-bundled]
-source_type = "local"
-source = "/Users/你的Mac使用者名稱/.codex/.tmp/bundled-marketplaces/openai-bundled"
-
-[marketplaces.openai-primary-runtime]
-source_type = "local"
-source = "/Users/你的Mac使用者名稱/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
-
-[plugins."browser@openai-bundled"]
-enabled = true
-
-[plugins."unified-computer-use@openai-bundled"]
-enabled = true
-
-[plugins."chrome@openai-bundled"]
-enabled = true
-
-[plugins."visualize@openai-bundled"]
-enabled = true
-
-[plugins."code-review@openai-bundled"]
-enabled = true
-
-[plugins."documents@openai-primary-runtime"]
-enabled = true
-
-[plugins."pdf@openai-primary-runtime"]
-enabled = true
-
-[plugins."spreadsheets@openai-primary-runtime"]
-enabled = true
-
-[plugins."presentations@openai-primary-runtime"]
-enabled = true
-
-[plugins."template-creator@openai-primary-runtime"]
-enabled = true
 ```
-*(註：如果你原本的 `config.toml` 最上方有設定區塊，只需修改前 3 個區塊，並保留你自己檔案下半部自動產生的 `[marketplaces]`、`[plugins]` 與 `[hooks]` 即可。)*
+
+_(註：設定欄位會因客戶端版本和供應商而異。只修改官方文件要求的欄位，並保留客戶端自動產生的 `[marketplaces]`、`[plugins]` 與 `[hooks]`。不要直接用範例覆蓋整份設定檔。)_
 
 ---
 
-### 步驟 3：徹底清除背景進程並重啟 App
-因為桌面端的 `codex` 與 `node_repl` 會在背景常駐，只按視窗上的 `Retry` 不會完整重新載入新憑證。請打開 **終端機（Terminal）** 執行以下指令徹底關閉所有背景進程：
+### 步驟 3：正常重新啟動應用程式
 
-* **macOS 終端機（Terminal）指令：**
-  ```bash
-  killall -9 ChatGPT codex node_repl SkyComputerUseClient 2>/dev/null
-  ```
-* **Windows 命令提示字元（CMD / PowerShell）指令：**
-  ```cmd
-  taskkill /F /IM ChatGPT.exe /IM codex.exe /IM node_repl.exe
-  ```
+儲存設定後，使用應用程式的正常退出功能完全關閉並重新開啟。避免使用強制終止程序的指令；若應用程式無法正常關閉，請依你的作業系統或客戶端官方指示處理。
 
 ---
 
 ### 步驟 4：重新啟動並開啟「全新對話（New Chat）」
-1. 重新打開 `ChatGPT.app`。
-2. **切勿在舊的報錯對話中按重試**（舊對話的 Session 已鎖死在 `Could not start this chat`）。
-3. 點擊左上角的 **`New chat`** 開啟一個新對話，確認左上角為 **`ChatGPT Work`**、右下角顯示你的模型名稱（如 `6.1 Sol Medium`），即可順暢對話！
+
+1. 重新開啟應用程式並確認登入狀態。
+2. 建立新對話，選擇所需模式及自訂模型。
+3. 先傳送一則不含敏感資料的測試訊息；若仍失敗，記錄錯誤文字並依客戶端及供應商文件排查。
 
 ---
 
 ## 💡 核心原理解析與常見錯誤排解表
 
-| 遇到的錯誤訊息 / 問題 | 原因解析 | 解決參數與方法 |
-|:---|:---|:---|
-| `Work browser access requires an authenticated account` | 客戶端檢測到未綁定官方認證，拒絕啟動內建瀏覽器 | 1. 確保 `auth.json` 內有官方登入的 `tokens`<br>2. 在 `[model_providers.OpenAI]` 加上 `requires_openai_auth = true` |
-| `model_providers contains reserved built-in provider IDs: 'openai'` | 新版禁止覆寫全小寫的內建 `"openai"` ID | 將 `model_provider` 與區塊名稱改為大小寫區分的 **`"OpenAI"`**（即 `[model_providers.OpenAI]`） |
-| `401 Unauthorized: {"code":"INVALID_API_KEY"} (wss://.../v1/responses)` | 開啟官方認證後，Codex 預設將官方 JWT Token 透過 WebSocket 發給中轉站 | 在 `[model_providers.OpenAI]` 中同時設定：<br>1. `experimental_bearer_token = "sk-..."`<br>2. `supports_websockets = false` |
-| 右下角模型名稱沒有變（仍顯示舊模型如 `6-luna`） | 把 `model = "..."` 寫在了 `[desktop]` 等區塊下方，變成子屬性 | 確保 `model_provider`、`openai_base_url`、`model` 寫在檔案**第 1～4 行（所有 `[xxx]` 標籤之前）** |
+| 遇到的錯誤訊息 / 問題                                                   | 原因解析                                                             | 解決參數與方法                                                                                                              |
+| :---------------------------------------------------------------------- | :------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------- |
+| `Work browser access requires an authenticated account` | 客戶端要求官方帳號身分，但目前登入狀態或設定未滿足要求 | 確認客戶端登入狀態與該版本文件；只有文件支援時才設定 `requires_openai_auth = true` |
+| `model_providers contains reserved built-in provider IDs` | 自訂供應商 ID 與客戶端保留 ID 衝突 | 選擇非保留的自訂 ID，並在頂層設定與供應商區塊中保持一致 |
+| `401 Unauthorized` 或 API Key 錯誤 | 端點、金鑰、認證格式或 API 相容性不正確 | 依供應商文件核對 base URL、模型 ID、API 格式和金鑰；如使用 WebSocket，確認供應商支援情況 |
+| 模型選擇器仍顯示舊模型 | 設定值錯誤、位置不符或客戶端尚未重新載入 | 確認頂層欄位位置與客戶端設定格式，然後正常重新啟動 |
 
 ---
+
 ---
 
 # Part 2: Full English Guide
 
 ## 📌 Overview & Errors Resolved
-When using the latest ChatGPT / Codex Desktop App (`v26.1013` / `v26.1016` and above) in **"ChatGPT Work" mode** with a third-party API / BYOK provider (such as Techikey), this dual-authentication configuration resolves the three major errors below:
+
+When a ChatGPT / Codex Desktop version requires an official account identity for Work mode or built-in tools, and you also use a third-party BYOK provider, the dual-authentication approach below may apply. Client behavior, configuration fields, and provider support can change; verify them against the documentation for your versions. This guide is not guaranteed to apply to every version or error.
 
 1. `Error submitting message: Work browser access requires an authenticated account`
 2. `ChatGPT configuration could not be loaded: model_providers contains reserved built-in provider IDs: 'openai'`
@@ -178,49 +138,52 @@ When using the latest ChatGPT / Codex Desktop App (`v26.1013` / `v26.1016` and a
 
 ---
 
+This setup primarily addresses the first error below. The other errors apply only when their stated causes match your configuration.
+
 ## 🚀 Step-by-Step Configuration (4 Steps)
 
-### Step 1: Log in with a Free Official ChatGPT Account (Generate `auth.json`)
-To pass the client's `requireWorkBrowserIdentity` check in **ChatGPT Work** mode, `~/.codex/auth.json` must contain valid official ChatGPT login tokens.
+### Step 1: Sign in with an account supported by the client
 
-1. Open your `~/.codex/` directory:
-   * **macOS:** Open Finder, press `Cmd + Shift + G`, type `~/.codex/`, and press Enter.
-   * **Windows:** Open File Explorer and go to `C:\Users\<YourUsername>\.codex\`.
-2. If you already modified `config.toml`, temporarily move `config.toml` to your Desktop as a backup and delete any existing `auth.json`.
-3. Launch `ChatGPT.app` and log in with **any official ChatGPT account (a Free tier account works fine)**.
-4. Once logged in, quit the app completely (`Cmd + Q` on macOS). This generates a valid `~/.codex/auth.json` file.
+If the client requires official account identity for Work mode or built-in tools, sign in using an account supported by that client. Eligibility and feature availability depend on the service, account type, and client version.
 
-#### 📄 `auth.json` Template & Verification
-Open `~/.codex/auth.json` and verify that it matches the structure below (**keep the official auto-generated tokens intact, and leave `OPENAI_API_KEY` as `null`**):
+1. Sign in through the app's account settings or follow the client's official sign-in instructions.
+2. If you need to locate local credential files, check the official instructions for your specific version and operating system.
+3. Do not manually create, edit, delete, or share authentication files. Let the client manage sign-in credentials.
+
+#### 📄 `auth.json` Structure Example
+
+Credential-file formats vary by version. The following is only a structural illustration; **do not copy it to create an authentication file**. Keep client-generated content intact, and never paste credentials into documentation, screenshots, or support requests:
 
 ```json
 {
   "auth_mode": "chatgpt",
   "OPENAI_API_KEY": null,
   "tokens": {
-    "id_token": "eyJhbG...(keep official auto-generated id_token untouched)...",
-    "access_token": "eyJhbG...(keep official auto-generated access_token untouched)...",
-    "refresh_token": "rt.1...(keep official auto-generated refresh_token untouched)...",
-    "account_id": "your-official-account-id"
+    "id_token": "REDACTED",
+    "access_token": "REDACTED",
+    "refresh_token": "REDACTED",
+    "account_id": "REDACTED"
   },
-  "last_refresh": "2026-10-22T11:40:02.879709Z"
+  "last_refresh": "REDACTED"
 }
 ```
 
 ---
 
-### Step 2: Configure `~/.codex/config.toml` (Dual-Track Auth Separation)
-Open `~/.codex/config.toml` and update the top sections using the template below (replace `https://techikey.com/v1`, `gpt-6.1-sol`, and `sk-YOUR_BYOK_API_KEY` with your actual provider details):
+### Step 2: Configure the BYOK provider using client documentation
 
-#### 📄 `config.toml` Full Template
+Find the configuration file using your client's documentation and back up your existing settings. This is a field example, not a universal configuration for every client or provider. Replace `https://api.example.com/v1`, `YOUR_MODEL_ID`, and `YOUR_API_KEY` with values from your provider, and verify that it supports the selected API format and authentication method:
+
+#### 📄 `config.toml` Field Example
+
 ```toml
 # ============================================================================
 # 1. Top-Level Global Settings (MUST be placed at the very top before any [section]!)
 # ============================================================================
-# IMPORTANT: Use capitalized "OpenAI" to bypass the reserved lowercase "openai" ID restriction.
-model_provider = "OpenAI"
-openai_base_url = "https://techikey.com/v1"
-model = "gpt-6.1-sol"
+# Use a custom provider ID that is not reserved, and keep it consistent below.
+model_provider = "CustomProvider"
+openai_base_url = "https://api.example.com/v1"
+model = "YOUR_MODEL_ID"
 model_reasoning_effort = "medium"
 
 # ============================================================================
@@ -233,80 +196,41 @@ conversationDetailMode = "STEPS_PROSE" # Keeps the UI in "ChatGPT Work" mode
 # ============================================================================
 # 3. Custom Provider & Dual-Auth Settings (ID must match top-level model_provider)
 # ============================================================================
-[model_providers.OpenAI]
-name = "techikey"
-base_url = "https://techikey.com/v1"
+[model_providers.CustomProvider]
+name = "Your BYOK provider"
+base_url = "https://api.example.com/v1"
 wire_api = "responses"
-experimental_bearer_token = "sk-YOUR_BYOK_API_KEY"
-requires_openai_auth = true   # Key 1: Passes Work Browser identity check using auth.json
-supports_websockets = false   # Key 2: Disables wss:// WebSockets & forces HTTPS to prevent 401 errors
+experimental_bearer_token = "YOUR_API_KEY"
+requires_openai_auth = true   # Use only if supported by your client configuration
+supports_websockets = false   # If the provider lacks WebSocket support, follow its documentation
 
-[model_providers.OpenAI.http_headers]
-Authorization = "Bearer sk-YOUR_BYOK_API_KEY"
+[model_providers.CustomProvider.http_headers]
+Authorization = "Bearer YOUR_API_KEY"
 Content-Type = "application/json"
 
-# ============================================================================
-# 4. Bundled Plugins (Keep your existing [marketplaces], [plugins], and [hooks] below)
-# ============================================================================
-[plugins."browser@openai-bundled"]
-enabled = true
-
-[plugins."unified-computer-use@openai-bundled"]
-enabled = true
-
-[plugins."chrome@openai-bundled"]
-enabled = true
-
-[plugins."visualize@openai-bundled"]
-enabled = true
-
-[plugins."code-review@openai-bundled"]
-enabled = true
-
-[plugins."documents@openai-primary-runtime"]
-enabled = true
-
-[plugins."pdf@openai-primary-runtime"]
-enabled = true
-
-[plugins."spreadsheets@openai-primary-runtime"]
-enabled = true
-
-[plugins."presentations@openai-primary-runtime"]
-enabled = true
-
-[plugins."template-creator@openai-primary-runtime"]
-enabled = true
 ```
 
 ---
 
-### Step 3: Kill Background Processes & Restart the App
-Because `codex` and `node_repl` run persistently in the background, clicking `Retry` in the UI is not enough. Open your **Terminal** and run the command below to terminate all background processes:
+### Step 3: Restart the app normally
 
-* **macOS (Terminal):**
-  ```bash
-  killall -9 ChatGPT codex node_repl SkyComputerUseClient 2>/dev/null
-  ```
-* **Windows (CMD / PowerShell):**
-  ```cmd
-  taskkill /F /IM ChatGPT.exe /IM codex.exe /IM node_repl.exe
-  ```
+After saving settings, fully quit and reopen the app using its normal exit controls. Avoid force-kill commands; if the app cannot close normally, follow the official instructions for your operating system and client.
 
 ---
 
 ### Step 4: Reopen the App & Start a "New Chat"
-1. Launch `ChatGPT.app`.
-2. **Do not retry inside an old failed chat thread** (failed threads remain locked in the `Could not start this chat` state).
-3. Click **`New chat`** in the top-left corner, verify that the top-left mode says **`ChatGPT Work`** and the bottom-right selector shows your custom model (e.g., `6.1 Sol Medium`), and send your message!
+
+1. Reopen the app and confirm that you are signed in.
+2. Start a new conversation and select the desired mode and custom model.
+3. Send a test message that contains no sensitive information. If it still fails, record the error text and consult the client and provider documentation.
 
 ---
 
 ## 💡 Troubleshooting & Key Parameter Reference
 
-| Error Message / Symptom | Root Cause | Solution |
-|:---|:---|:---|
-| `Work browser access requires an authenticated account` | Client blocks the built-in Work Browser when the provider is not linked to OpenAI auth | 1. Keep official `tokens` inside `auth.json`<br>2. Set `requires_openai_auth = true` under `[model_providers.OpenAI]` |
-| `model_providers contains reserved built-in provider IDs: 'openai'` | Newer versions forbid overriding the lowercase `'openai'` provider ID | Use case-sensitive **`"OpenAI"`** for `model_provider` and `[model_providers.OpenAI]` |
-| `401 Unauthorized: {"code":"INVALID_API_KEY"} (wss://.../v1/responses)` | With OpenAI auth enabled, Codex sends the official JWT token over WebSockets instead of your BYOK key | Under `[model_providers.OpenAI]`, set both:<br>1. `experimental_bearer_token = "sk-..."`<br>2. `supports_websockets = false` |
-| Model selector still shows old model (e.g., `gpt-6-luna`) | `model` and `model_provider` were placed underneath `[desktop]` instead of the root level | Move `model_provider`, `openai_base_url`, and `model` to the **very top of `config.toml`** before any `[section]` header |
+| Error Message / Symptom                                                 | Root Cause                                                                                            | Solution                                                                                                                     |
+| :---------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------- |
+| `Work browser access requires an authenticated account` | The client requires official account identity, but the current sign-in or configuration does not meet that requirement | Verify sign-in and the documentation for your client version; set `requires_openai_auth = true` only if supported |
+| `model_providers contains reserved built-in provider IDs` | A custom provider ID conflicts with a reserved ID | Choose a non-reserved custom ID and use it consistently in the top-level setting and provider section |
+| `401 Unauthorized` or API key error | The endpoint, key, authentication format, or API compatibility is incorrect | Verify the base URL, model ID, API format, and key against provider documentation; check WebSocket support if relevant |
+| Model selector still shows an old model | A setting is invalid, misplaced, or not reloaded | Verify the required top-level fields and configuration format, then restart the app normally |
