@@ -115,12 +115,12 @@ _(註：設定欄位會因客戶端版本和供應商而異。只修改官方文
 
 ## 💡 核心原理解析與常見錯誤排解表
 
-| 遇到的錯誤訊息 / 問題                                                   | 原因解析                                                             | 解決參數與方法                                                                                                              |
-| :---------------------------------------------------------------------- | :------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------- |
-| `Work browser access requires an authenticated account` | 客戶端要求官方帳號身分，但目前登入狀態或設定未滿足要求 | 確認客戶端登入狀態與該版本文件；只有文件支援時才設定 `requires_openai_auth = true` |
-| `model_providers contains reserved built-in provider IDs` | 自訂供應商 ID 與客戶端保留 ID 衝突 | 選擇非保留的自訂 ID，並在頂層設定與供應商區塊中保持一致 |
-| `401 Unauthorized` 或 API Key 錯誤 | 端點、金鑰、認證格式或 API 相容性不正確 | 依供應商文件核對 base URL、模型 ID、API 格式和金鑰；如使用 WebSocket，確認供應商支援情況 |
-| 模型選擇器仍顯示舊模型 | 設定值錯誤、位置不符或客戶端尚未重新載入 | 確認頂層欄位位置與客戶端設定格式，然後正常重新啟動 |
+| 遇到的錯誤訊息 / 問題                                     | 原因解析                                               | 解決參數與方法                                                                           |
+| :-------------------------------------------------------- | :----------------------------------------------------- | :--------------------------------------------------------------------------------------- |
+| `Work browser access requires an authenticated account`   | 客戶端要求官方帳號身分，但目前登入狀態或設定未滿足要求 | 確認客戶端登入狀態與該版本文件；只有文件支援時才設定 `requires_openai_auth = true`       |
+| `model_providers contains reserved built-in provider IDs` | 自訂供應商 ID 與客戶端保留 ID 衝突                     | 選擇非保留的自訂 ID，並在頂層設定與供應商區塊中保持一致                                  |
+| `401 Unauthorized` 或 API Key 錯誤                        | 端點、金鑰、認證格式或 API 相容性不正確                | 依供應商文件核對 base URL、模型 ID、API 格式和金鑰；如使用 WebSocket，確認供應商支援情況 |
+| 模型選擇器仍顯示舊模型                                    | 設定值錯誤、位置不符或客戶端尚未重新載入               | 確認頂層欄位位置與客戶端設定格式，然後正常重新啟動                                       |
 
 ---
 
@@ -228,9 +228,9 @@ After saving settings, fully quit and reopen the app using its normal exit contr
 
 ## 💡 Troubleshooting & Key Parameter Reference
 
-| Error Message / Symptom                                                 | Root Cause                                                                                            | Solution                                                                                                                     |
-| :---------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------- |
-| `Work browser access requires an authenticated account` | The client requires official account identity, but the current sign-in or configuration does not meet that requirement | Verify sign-in and the documentation for your client version; set `requires_openai_auth = true` only if supported |
-| `model_providers contains reserved built-in provider IDs` | A custom provider ID conflicts with a reserved ID | Choose a non-reserved custom ID and use it consistently in the top-level setting and provider section |
-| `401 Unauthorized` or API key error | The endpoint, key, authentication format, or API compatibility is incorrect | Verify the base URL, model ID, API format, and key against provider documentation; check WebSocket support if relevant |
-| Model selector still shows an old model | A setting is invalid, misplaced, or not reloaded | Verify the required top-level fields and configuration format, then restart the app normally |
+| Error Message / Symptom                                   | Root Cause                                                                                                             | Solution                                                                                                               |
+| :-------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------- |
+| `Work browser access requires an authenticated account`   | The client requires official account identity, but the current sign-in or configuration does not meet that requirement | Verify sign-in and the documentation for your client version; set `requires_openai_auth = true` only if supported      |
+| `model_providers contains reserved built-in provider IDs` | A custom provider ID conflicts with a reserved ID                                                                      | Choose a non-reserved custom ID and use it consistently in the top-level setting and provider section                  |
+| `401 Unauthorized` or API key error                       | The endpoint, key, authentication format, or API compatibility is incorrect                                            | Verify the base URL, model ID, API format, and key against provider documentation; check WebSocket support if relevant |
+| Model selector still shows an old model                   | A setting is invalid, misplaced, or not reloaded                                                                       | Verify the required top-level fields and configuration format, then restart the app normally                           |
