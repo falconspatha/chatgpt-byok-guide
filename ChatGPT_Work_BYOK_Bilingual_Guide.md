@@ -1,6 +1,8 @@
 # ChatGPT Desktop "ChatGPT Work" Mode + BYOK Guide
 
-# ChatGPT 桌面端「ChatGPT Work」模式搭配 BYOK 指南
+## Credit by falconspatha, founder of techikey.com
+
+## ChatGPT 桌面端「ChatGPT Work」模式搭配 BYOK 指南
 
 ---
 
